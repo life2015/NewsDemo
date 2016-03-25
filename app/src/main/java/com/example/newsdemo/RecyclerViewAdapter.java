@@ -57,8 +57,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             news_title.setBackgroundColor(Color.argb(20, 0, 0, 0));
 
         }
-
-
     }
 
     @Override
@@ -76,18 +74,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //personViewHolder.news_photo.setImageResource(R.drawable.news_one);
         personViewHolder.news_title.setText(newses.get(j).getSubject());
         personViewHolder.news_desc.setText(newses.get(j).getSummary());
-        Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.news_one).into(new BitmapImageViewTarget(personViewHolder.news_photo)
-        {
+        Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.news_one).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 super.onResourceReady(resource, glideAnimation);
                 Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        int vibrant=palette.getLightMutedColor(0x000000);
-                        personViewHolder.cardView.setBackgroundColor(vibrant);
-                    }
-                }
+                                                    @Override
+                                                    public void onGenerated(Palette palette) {
+                                                        int vibrant = palette.getLightMutedColor(0x000000);
+                                                        personViewHolder.cardView.setBackgroundColor(vibrant);
+                                                    }
+                                                }
                 );
             }
         });
@@ -109,7 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, NewsContent.class);
-                Bundle bundle=new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -120,7 +117,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, NewsContent.class);
-                Bundle bundle=new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
                 intent.putExtras(bundle);
                 context.startActivity(intent);

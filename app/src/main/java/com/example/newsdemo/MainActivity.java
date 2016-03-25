@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     int NEWS_LIST_ID = 1;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    //List<NewsBean> mNewsBeanList;
+    RecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +51,20 @@ public class MainActivity extends AppCompatActivity {
 //        List<NewsBean> newslist=getJsonData(jsonStr);
 //        System.out.println(newslist);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         assert recyclerView != null;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalcount=layoutManager.getItemCount();
+                int lastvisableitem=layoutManager.findLastVisibleItemPosition();
+
+            }
+        });
         mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         assert mSwipeRefreshLayout != null;
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN);
@@ -64,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 new MyAsyncTask().execute(url);
             }
         });
+
+
+
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -79,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
     class MyAsyncTask extends AsyncTask<String, Void, List<NewsBean>> {
 
-
         @Override
         protected List<NewsBean> doInBackground(String... params) {
             List<NewsBean> newsBeanList = getJsonData(params[0]);
@@ -94,12 +107,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<NewsBean> newsBeen) {
             super.onPostExecute(newsBeen);
-            System.out.println(newsBeen);
-            //progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            RecyclerViewAdapter adapter;
+            //System.out.println(newsBeen);
+            //mNewsBeanList=newsBeen;
             adapter = new RecyclerViewAdapter(newsBeen, MainActivity.this);
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
