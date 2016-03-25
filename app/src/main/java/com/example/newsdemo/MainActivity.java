@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 import org.json.JSONArray;
@@ -38,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     int NEWS_LIST_ID = 1;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    //List<NewsBean> mNewsBeanList;
+    List<NewsBean> mNewsBeanList;
     RecyclerViewAdapter adapter;
+    private boolean loading=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 //        String jsonStr=readStream(inputStream);
 //        List<NewsBean> newslist=getJsonData(jsonStr);
 //        System.out.println(newslist);
-
+        mNewsBeanList=new ArrayList<>();
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         assert recyclerView != null;
@@ -62,7 +64,17 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 int totalcount=layoutManager.getItemCount();
                 int lastvisableitem=layoutManager.findLastVisibleItemPosition();
+                if(!loading&&totalcount<(lastvisableitem+2))
+                {
+                    if(NEWS_LIST_ID<5)
+                    {NEWS_LIST_ID++;
+                    new MyAsyncTask().execute(NEWS_LIST_ID);
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }else {
 
+                        //Toast.makeText(MainActivity.this,"没有新闻了",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
@@ -72,17 +84,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                new MyAsyncTask().execute(url);
+                new MyAsyncTask().execute(NEWS_LIST_ID);
             }
         });
-
 
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
-                new MyAsyncTask().execute(url);
+                NEWS_LIST_ID=1;
+                new MyAsyncTask().execute(NEWS_LIST_ID);
             }
         });
 
@@ -91,16 +103,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class MyAsyncTask extends AsyncTask<String, Void, List<NewsBean>> {
+    class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
+
 
         @Override
-        protected List<NewsBean> doInBackground(String... params) {
-            List<NewsBean> newsBeanList = getJsonData(params[0]);
-//            for (NewsBean bean:newsBeanList)
-//            {
-//                bean.bitmap=getImageFromUrl(bean.picUrl);
-//
-//            }
+        protected List<NewsBean> doInBackground(Integer... params) {
+            loading=true;
+            String url = "http://open.twtstudio.com/api/v1/news/"+String.valueOf(params[0])+"/page/1";
+            if(params[0]!=1)
+            {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            List<NewsBean> newsBeanList = getJsonData(url);
+
             return newsBeanList;
         }
 
@@ -109,9 +128,13 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(newsBeen);
             //System.out.println(newsBeen);
             //mNewsBeanList=newsBeen;
-            adapter = new RecyclerViewAdapter(newsBeen, MainActivity.this);
-            recyclerView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            mNewsBeanList.addAll(mNewsBeanList.size(),newsBeen);
+            if(NEWS_LIST_ID==1)
+            {adapter = new RecyclerViewAdapter(mNewsBeanList, MainActivity.this);
+            recyclerView.setAdapter(adapter);}
+            else
+            {adapter.notifyDataSetChanged();}
+            loading=false;
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -179,6 +202,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return bitmap;
     }
-
 
 }
