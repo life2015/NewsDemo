@@ -11,12 +11,14 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar2"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:ellipsize="marquee"
             android:background="#0C547D"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 

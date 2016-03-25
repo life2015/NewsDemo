@@ -24,12 +24,12 @@ import java.net.URL;
 
 public class NewsContent extends AppCompatActivity {
     WebView webView;
-
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_content_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         //获取得到的index数据，拼接成为URL
         Intent intent = this.getIntent();
@@ -53,7 +53,7 @@ public class NewsContent extends AppCompatActivity {
         protected void onPostExecute(ContentBean contentBean) {
             super.onPostExecute(contentBean);
             System.out.println(contentBean.subject);
-
+            toolbar.setTitle(contentBean.subject);
             webView.loadData(contentBean.content, "text/html;charset=utf-8", null);
 
         }

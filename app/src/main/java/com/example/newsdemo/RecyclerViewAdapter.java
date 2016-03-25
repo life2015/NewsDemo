@@ -74,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //personViewHolder.news_photo.setImageResource(R.drawable.news_one);
         personViewHolder.news_title.setText(newses.get(j).getSubject());
         personViewHolder.news_desc.setText(newses.get(j).getSummary());
-        Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.news_one).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
+        Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.error_no_photo).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 super.onResourceReady(resource, glideAnimation);

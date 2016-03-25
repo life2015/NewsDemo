@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
     //String url = "http://open.twtstudio.com/api/v1/news/tmp/1?page=1";
     String url = "http://open.twtstudio.com/api/v1/news/1/page/1";
     private RecyclerView recyclerView;
-    private ProgressBar progressBar;
     int NEWS_LIST_ID = 1;
+    //i为吐司辅助
+    int i=1;
     SwipeRefreshLayout mSwipeRefreshLayout;
     List<NewsBean> mNewsBeanList;
     RecyclerViewAdapter adapter;
@@ -71,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
                     new MyAsyncTask().execute(NEWS_LIST_ID);
                         mSwipeRefreshLayout.setRefreshing(true);
                     }else {
-
-                        //Toast.makeText(MainActivity.this,"没有新闻了",Toast.LENGTH_SHORT).show();
+                        //i为吐司辅助变量
+                        if(i==1)
+                        {Toast.makeText(MainActivity.this,"没有新闻啦",Toast.LENGTH_SHORT).show();}
+                        i=2;
                     }
                 }
             }
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 mSwipeRefreshLayout.setRefreshing(true);
                 NEWS_LIST_ID=1;
                 new MyAsyncTask().execute(NEWS_LIST_ID);
+                //i为吐司辅助
+                int i=1;
             }
         });
 
@@ -119,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             List<NewsBean> newsBeanList = getJsonData(url);
-
             return newsBeanList;
         }
 
