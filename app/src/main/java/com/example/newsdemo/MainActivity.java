@@ -2,7 +2,10 @@ package com.example.newsdemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     String url = "http://open.twtstudio.com/api/v1/news/1/page/1";
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    int NEWS_LIST_ID = 1;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,28 +49,40 @@ public class MainActivity extends AppCompatActivity {
 //        List<NewsBean> newslist=getJsonData(jsonStr);
 //        System.out.println(newslist);
 
-        progressBar= (ProgressBar) findViewById(R.id.progressBar);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        assert recyclerView != null;
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        new MyAsyncTask().execute(url);
+        mSwipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        assert mSwipeRefreshLayout != null;
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                new MyAsyncTask().execute(url);
+            }
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                new MyAsyncTask().execute(url);
+            }
+        });
+
+        //new MyAsyncTask().execute(url);
 
 
     }
 
     class MyAsyncTask extends AsyncTask<String, Void, List<NewsBean>> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            recyclerView.setVisibility(View.GONE);
-
-        }
 
         @Override
         protected List<NewsBean> doInBackground(String... params) {
-            List<NewsBean> newsBeanList= getJsonData(params[0]);
+            List<NewsBean> newsBeanList = getJsonData(params[0]);
 //            for (NewsBean bean:newsBeanList)
 //            {
 //                bean.bitmap=getImageFromUrl(bean.picUrl);
@@ -78,11 +95,12 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(List<NewsBean> newsBeen) {
             super.onPostExecute(newsBeen);
             System.out.println(newsBeen);
-            progressBar.setVisibility(View.GONE);
+            //progressBar.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             RecyclerViewAdapter adapter;
             adapter = new RecyclerViewAdapter(newsBeen, MainActivity.this);
             recyclerView.setAdapter(adapter);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -132,15 +150,15 @@ public class MainActivity extends AppCompatActivity {
         }
         return newsBeanList;
     }
-    private Bitmap getImageFromUrl(String url)
-    {
-        Bitmap bitmap=null;
+
+    private Bitmap getImageFromUrl(String url) {
+        Bitmap bitmap = null;
         try {
-            URL mUrl=new URL(url);
-            URLConnection connection=mUrl.openConnection();
-            InputStream inputStream=connection.getInputStream();
-            BufferedInputStream bis=new BufferedInputStream(inputStream);
-            bitmap= BitmapFactory.decodeStream(bis);
+            URL mUrl = new URL(url);
+            URLConnection connection = mUrl.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(inputStream);
+            bitmap = BitmapFactory.decodeStream(bis);
             inputStream.close();
             bis.close();
 
