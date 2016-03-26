@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     int i=1;
     SwipeRefreshLayout mSwipeRefreshLayout;
     List<NewsBean> mNewsBeanList;
-    RecyclerViewAdapter adapter;
+    RecyclerViewAdapterDemo adapter;
     private boolean loading=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +66,13 @@ public class MainActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 int totalcount=layoutManager.getItemCount();
                 int lastvisableitem=layoutManager.findLastVisibleItemPosition();
-                if(!loading&&totalcount<(lastvisableitem+2))
+                if(!loading&&totalcount<(lastvisableitem)+2)
                 {
                     if(NEWS_LIST_ID<5)
                     {NEWS_LIST_ID++;
                     new MyAsyncTask().execute(NEWS_LIST_ID);
-                        mSwipeRefreshLayout.setRefreshing(true);
+                        Log.d("gg","触发");
+                        //mSwipeRefreshLayout.setRefreshing(true);
                     }else {
                         //i为吐司辅助变量
                         if(i==1)
@@ -110,19 +112,22 @@ public class MainActivity extends AppCompatActivity {
 
     class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(NEWS_LIST_ID!=1)
+            {
+                mNewsBeanList.add(null);
+                adapter.notifyItemChanged(mNewsBeanList.size()-1);
+                Log.d("gg","出现");
+            }
+
+        }
 
         @Override
         protected List<NewsBean> doInBackground(Integer... params) {
             loading=true;
             String url = "http://open.twtstudio.com/api/v1/news/"+String.valueOf(params[0])+"/page/1";
-            if(params[0]!=1)
-            {
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
             List<NewsBean> newsBeanList = getJsonData(url);
             return newsBeanList;
         }
@@ -132,12 +137,18 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(newsBeen);
             //System.out.println(newsBeen);
             //mNewsBeanList=newsBeen;
+            if(NEWS_LIST_ID!=1)
+            {
+                mNewsBeanList.remove(mNewsBeanList.size()-1);
+                Log.d("gg","移除项");
+            }
             mNewsBeanList.addAll(mNewsBeanList.size(),newsBeen);
             if(NEWS_LIST_ID==1)
-            {adapter = new RecyclerViewAdapter(mNewsBeanList, MainActivity.this);
+            {adapter = new RecyclerViewAdapterDemo(mNewsBeanList, MainActivity.this);
             recyclerView.setAdapter(adapter);}
             else
-            {adapter.notifyDataSetChanged();}
+            {adapter.notifyDataSetChanged();
+            Log.d("gg","改变适配器");}
             loading=false;
             mSwipeRefreshLayout.setRefreshing(false);
         }
@@ -190,21 +201,5 @@ public class MainActivity extends AppCompatActivity {
         return newsBeanList;
     }
 
-    private Bitmap getImageFromUrl(String url) {
-        Bitmap bitmap = null;
-        try {
-            URL mUrl = new URL(url);
-            URLConnection connection = mUrl.openConnection();
-            InputStream inputStream = connection.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(inputStream);
-            bitmap = BitmapFactory.decodeStream(bis);
-            inputStream.close();
-            bis.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
 
 }
