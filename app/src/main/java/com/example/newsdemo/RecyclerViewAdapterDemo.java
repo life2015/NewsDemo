@@ -46,8 +46,9 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
         ImageView news_photo;
         TextView news_title;
         TextView news_desc;
-        Button share;
-        Button readMore;
+        TextView visit_count;
+        TextView comments_count;
+        //Button readMore;
 
         public NewsViewHolder(final View itemView) {
             super(itemView);
@@ -55,9 +56,10 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             news_photo = (ImageView) itemView.findViewById(R.id.news_photo);
             news_title = (TextView) itemView.findViewById(R.id.news_title);
             news_desc = (TextView) itemView.findViewById(R.id.news_desc);
-            share = (Button) itemView.findViewById(R.id.btn_share);
-            readMore = (Button) itemView.findViewById(R.id.btn_more);
+            visit_count = (TextView) itemView.findViewById(R.id.visitcount);
+            //readMore = (Button) itemView.findViewById(R.id.btn_more);
             //设置TextView背景为半透明
+            comments_count= (TextView) itemView.findViewById(R.id.comments_count);
             news_title.setBackgroundColor(Color.argb(20, 0, 0, 0));
 
         }
@@ -123,6 +125,8 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             final NewsViewHolder personViewHolder=(NewsViewHolder)holder;
             personViewHolder.news_title.setText(newses.get(j).getSubject());
             personViewHolder.news_desc.setText(newses.get(j).getSummary());
+            personViewHolder.visit_count.setText("阅读量:"+String.valueOf(newses.get(j).getVisitCount()));
+            personViewHolder.comments_count.setText("评论数:"+String.valueOf(newses.get(j).getComments()));
             Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.error_no_photo).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -138,17 +142,17 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
 
-            personViewHolder.share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-                    intent.putExtra(Intent.EXTRA_TEXT, newses.get(j).getSummary());
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(Intent.createChooser(intent, newses.get(j).getSubject()));
-                }
-            });
+//            personViewHolder.share.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(Intent.ACTION_SEND);
+//                    intent.setType("text/plain");
+//                    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+//                    intent.putExtra(Intent.EXTRA_TEXT, newses.get(j).getSummary());
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.startActivity(Intent.createChooser(intent, newses.get(j).getSubject()));
+//                }
+//            });
 
             //为btn_share btn_readMore cardView设置点击事件
             personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -157,21 +161,23 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
                     Intent intent = new Intent(context, NewsContent.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
+                    bundle.putString("bitmap_url",newses.get(j).getPicUrl());
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
             });
 
-            personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, NewsContent.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                }
-            });
+//            personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(context, NewsContent.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
+//                    bundle.putString("bitmap_url",newses.get(j).getPicUrl());
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+//                }
+//            });
         }
 
     }

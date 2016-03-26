@@ -24,7 +24,8 @@
                     android:scaleType="centerCrop"
                     android:layout_alignParentTop="true"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"/>
                 <TextView
                     android:id="@+id/news_title"
                     android:layout_alignParentBottom="false"
@@ -49,20 +50,20 @@
                 android:orientation="horizontal"
                 android:layout_below="@+id/news_desc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/btn_share"
-                    android:text="SHARE"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
+                <TextView
+                    android:id="@+id/visitcount"
+                    android:text="0"
                     android:background="#00000000"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/btn_more"
+                <TextView
+                    android:id="@+id/comments_count"
                     android:background="#00000000"
-
-                    android:text="READ MORE"
+                    android:text="comments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>

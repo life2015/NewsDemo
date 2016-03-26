@@ -1,5 +1,7 @@
 package com.example.newsdemo;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by 冀辰阳 on 2016/3/23.
  */
@@ -11,6 +13,7 @@ public class ContentBean {
     String gonggao;
     String shenggao;
     String sheying;
+    Bitmap bitmap;
     int visitcount;
 
     public ContentBean() {
