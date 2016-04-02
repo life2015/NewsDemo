@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.app_bar_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 //        InputStream inputStream=this.getResources().openRawResource(R.raw.twtnews);
 //        String jsonStr=readStream(inputStream);
 //        List<NewsBean> newslist=getJsonData(jsonStr);
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     new MyAsyncTask().execute(NEWS_LIST_ID);
                         Log.d("gg","触发");
                         //mSwipeRefreshLayout.setRefreshing(true);
+
                     }else {
                         //i为吐司辅助变量
                         if(i==1)
@@ -99,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
                 mSwipeRefreshLayout.setRefreshing(true);
                 NEWS_LIST_ID=1;
+                mNewsBeanList.clear();
                 new MyAsyncTask().execute(NEWS_LIST_ID);
+
                 //i为吐司辅助
                 int i=1;
             }
@@ -117,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
             if(NEWS_LIST_ID!=1)
             {
-                mNewsBeanList.add(null);
-                adapter.notifyItemChanged(mNewsBeanList.size()-1);
+                NewsBean newsBean=new NewsBean();
+                newsBean.TYPE=2;
+                mNewsBeanList.add(newsBean);
+                //adapter.notifyItemChanged(mNewsBeanList.size()-1);
+                adapter.notifyDataSetChanged();
                 Log.d("gg","出现");
             }
 
@@ -127,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected List<NewsBean> doInBackground(Integer... params) {
             loading=true;
-            String url = "http://open.twtstudio.com/api/v1/news/"+String.valueOf(params[0])+"/page/1";
+            String url = "http://open.twtstudio.com/api/v1/news/1/page/"+String.valueOf(params[0]);
             List<NewsBean> newsBeanList = getJsonData(url);
             return newsBeanList;
         }
@@ -187,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 newsBean = new NewsBean();
+                newsBean.TYPE=1;
                 newsBean.index = jsonObject.getInt("index");
                 newsBean.subject = jsonObject.getString("subject");
                 newsBean.picUrl = jsonObject.getString("pic");

@@ -103,12 +103,18 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
         NewsBean bean = newses.get(position);
-        if (bean == null) {
-            return TYPE_FOOTER;
-        } else {
-            return TYPE_NORMAL;
-        }
+//        if (bean == null) {
+//            return TYPE_FOOTER;
+//        } else {
+//            return TYPE_NORMAL;
+//        }
         //return TYPE_NORMAL;
+        switch (bean.TYPE)
+        {
+            case TYPE_FOOTER:return TYPE_FOOTER;
+            case TYPE_NORMAL:return TYPE_NORMAL;
+        }
+        return 0;
     }
 
     @Override

@@ -14,6 +14,7 @@ public class NewsBean
     int comments;
     String summary;
     Bitmap bitmap;
+    int TYPE;
 
     public NewsBean() {
     }
