@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -74,13 +75,6 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
-
-    //    @Override
-//    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-//        View v = LayoutInflater.from(context).inflate(R.layout.news_item, viewGroup, false);
-//        NewsViewHolder nvh = new NewsViewHolder(v);
-//        return nvh;
-//    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder=null;
@@ -95,31 +89,19 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
                 view=mLayoutInflater.from(context).inflate(R.layout.footer,parent,false );
                 viewHolder=new FooterViewHolder(view);
                 return viewHolder;
-
         }
-        return null;
+        return viewHolder;
     }
 
 
     @Override
     public int getItemViewType(int position) {
-//        NewsBean bean = newses.get(position);
-//        if (bean == null) {
-//            return TYPE_FOOTER;
-//        } else {
-//            return TYPE_NORMAL;
-//        }
-        //return TYPE_NORMAL;
-//        switch (bean.TYPE)
-//        {
-//            case TYPE_FOOTER:return TYPE_FOOTER;
-//            case TYPE_NORMAL:return TYPE_NORMAL;
-//        }
-//        return 0;
+
         if(position+1 >= getItemCount()) {
             Log.d("gg","print Footer");
             return TYPE_FOOTER;
-        }else {
+        }else
+        {
             return TYPE_NORMAL;
         }
     }
@@ -127,15 +109,9 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final int j = position;
-        //这时候 article是 null，先把 footer 处理了
-//        if (getItemViewType(position) == TYPE_FOOTER) {
-//            Log.d("gg","真的出现了");
-//            //((FooterViewHolder) personViewHolder).rcvLoadMore.spin();
-//            return;
-//        }
+
         if (getItemViewType(position) == TYPE_NORMAL) {
 
-            Log.d("gg","Normal");
             final NewsViewHolder personViewHolder=(NewsViewHolder)holder;
             personViewHolder.news_title.setText(newses.get(j).getSubject());
             personViewHolder.news_desc.setText(newses.get(j).getSummary());
@@ -145,28 +121,18 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     super.onResourceReady(resource, glideAnimation);
-                    Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
+                    {Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
                                                         @Override
                                                         public void onGenerated(Palette palette) {
                                                             int vibrant = palette.getLightMutedColor(0x000000);
                                                             personViewHolder.cardView.setBackgroundColor(vibrant);
                                                         }
                                                     }
-                    );
+                    );}
                 }
             });
 
-//            personViewHolder.share.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setType("text/plain");
-//                    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-//                    intent.putExtra(Intent.EXTRA_TEXT, newses.get(j).getSummary());
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(Intent.createChooser(intent, newses.get(j).getSubject()));
-//                }
-//            });
 
             //为btn_share btn_readMore cardView设置点击事件
             personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +158,20 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
 //                    context.startActivity(intent);
 //                }
 //            });
+
+            // share部分的代码
+//            personViewHolder.share.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(Intent.ACTION_SEND);
+//                    intent.setType("text/plain");
+//                    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
+//                    intent.putExtra(Intent.EXTRA_TEXT, newses.get(j).getSummary());
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.startActivity(Intent.createChooser(intent, newses.get(j).getSubject()));
+//                }
+//            });
+
         }
 
     }

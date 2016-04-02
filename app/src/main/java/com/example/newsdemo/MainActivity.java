@@ -51,10 +51,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        InputStream inputStream=this.getResources().openRawResource(R.raw.twtnews);
-//        String jsonStr=readStream(inputStream);
-//        List<NewsBean> newslist=getJsonData(jsonStr);
-//        System.out.println(newslist);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         assert recyclerView != null;
@@ -68,18 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 int lastvisableitem=layoutManager.findLastVisibleItemPosition();
                 if(!loading&&totalcount<(lastvisableitem)+2)
                 {
-                    if(NEWS_LIST_ID<5)
-                    {NEWS_LIST_ID++;
+                    NEWS_LIST_ID++;
                     new MyAsyncTask().execute(NEWS_LIST_ID);
                         Log.d("gg","触发");
-                        //mSwipeRefreshLayout.setRefreshing(true);
-
-                    }else {
-                        //i为吐司辅助变量
-                        if(i==1)
-                        {Toast.makeText(MainActivity.this,"没有新闻啦",Toast.LENGTH_SHORT).show();}
-                        i=2;
-                    }
                 }
             }
         });
@@ -90,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
+                NEWS_LIST_ID=1;
+                adapter = new RecyclerViewAdapterDemo(mNewsBeanList, MainActivity.this);
+                recyclerView.setAdapter(adapter);
                 new MyAsyncTask().execute(NEWS_LIST_ID);
             }
         });
@@ -108,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adapter = new RecyclerViewAdapterDemo(mNewsBeanList, MainActivity.this);
-        recyclerView.setAdapter(adapter);
+
 
         //new MyAsyncTask().execute(url);
 
@@ -117,21 +106,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if(NEWS_LIST_ID!=1)
-            {
-                NewsBean newsBean=new NewsBean();
-                newsBean.TYPE=2;
-                mNewsBeanList.add(newsBean);
-                adapter.notifyItemChanged(mNewsBeanList.size()-1);
-//                adapter.notifyDataSetChanged();
-                Log.d("gg","出现");
-            }
-
-        }
 
         @Override
         protected List<NewsBean> doInBackground(Integer... params) {
@@ -146,18 +120,10 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(newsBeen);
             //System.out.println(newsBeen);
             //mNewsBeanList=newsBeen;
-            if(NEWS_LIST_ID!=1)
-            {
-                mNewsBeanList.remove(mNewsBeanList.size()-1);
-                Log.d("gg","移除项");
-            }
+
             mNewsBeanList.addAll(mNewsBeanList.size(),newsBeen);
-            if(NEWS_LIST_ID==1)
-            {adapter = new RecyclerViewAdapterDemo(mNewsBeanList, MainActivity.this);
-            recyclerView.setAdapter(adapter);}
-            else
-            {adapter.notifyDataSetChanged();
-            Log.d("gg","改变适配器");}
+
+            adapter.notifyDataSetChanged();
             loading=false;
             mSwipeRefreshLayout.setRefreshing(false);
         }
