@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     //i为吐司辅助
     int i=1;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    List<NewsBean> mNewsBeanList;
+    List<NewsBean> mNewsBeanList = new ArrayList<>();
     RecyclerViewAdapterDemo adapter;
     private boolean loading=false;
     @Override
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 //        String jsonStr=readStream(inputStream);
 //        List<NewsBean> newslist=getJsonData(jsonStr);
 //        System.out.println(newslist);
-        mNewsBeanList=new ArrayList<>();
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         assert recyclerView != null;
@@ -109,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        adapter = new RecyclerViewAdapterDemo(mNewsBeanList, MainActivity.this);
+        recyclerView.setAdapter(adapter);
+
         //new MyAsyncTask().execute(url);
 
 
@@ -124,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 NewsBean newsBean=new NewsBean();
                 newsBean.TYPE=2;
                 mNewsBeanList.add(newsBean);
-                //adapter.notifyItemChanged(mNewsBeanList.size()-1);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemChanged(mNewsBeanList.size()-1);
+//                adapter.notifyDataSetChanged();
                 Log.d("gg","出现");
             }
 
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<NewsBean> getJsonData(String url) {
-        String jsonString = null;
+            String jsonString = null;
         try {
             jsonString = readStream(new URL(url).openStream());
         } catch (IOException e) {

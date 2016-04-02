@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<NewsBean> newses;
+    private List<NewsBean> newses = new ArrayList<>();
     private Context context;
     public final static int TYPE_FOOTER = 2;//底部--往往是loading_more
     public final static int TYPE_NORMAL = 1; // 正常的一条文章
@@ -102,32 +103,39 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        NewsBean bean = newses.get(position);
+//        NewsBean bean = newses.get(position);
 //        if (bean == null) {
 //            return TYPE_FOOTER;
 //        } else {
 //            return TYPE_NORMAL;
 //        }
         //return TYPE_NORMAL;
-        switch (bean.TYPE)
-        {
-            case TYPE_FOOTER:return TYPE_FOOTER;
-            case TYPE_NORMAL:return TYPE_NORMAL;
+//        switch (bean.TYPE)
+//        {
+//            case TYPE_FOOTER:return TYPE_FOOTER;
+//            case TYPE_NORMAL:return TYPE_NORMAL;
+//        }
+//        return 0;
+        if(position+1 >= getItemCount()) {
+            Log.d("gg","print Footer");
+            return TYPE_FOOTER;
+        }else {
+            return TYPE_NORMAL;
         }
-        return 0;
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int i) {
-        final int j = i;
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+        final int j = position;
         //这时候 article是 null，先把 footer 处理了
-        if (holder instanceof FooterViewHolder) {
-            Log.d("gg","真的出现了");
-            //((FooterViewHolder) personViewHolder).rcvLoadMore.spin();
-            return;
-        }
-        if (holder instanceof NewsViewHolder) {
+//        if (getItemViewType(position) == TYPE_FOOTER) {
+//            Log.d("gg","真的出现了");
+//            //((FooterViewHolder) personViewHolder).rcvLoadMore.spin();
+//            return;
+//        }
+        if (getItemViewType(position) == TYPE_NORMAL) {
 
+            Log.d("gg","Normal");
             final NewsViewHolder personViewHolder=(NewsViewHolder)holder;
             personViewHolder.news_title.setText(newses.get(j).getSubject());
             personViewHolder.news_desc.setText(newses.get(j).getSummary());
