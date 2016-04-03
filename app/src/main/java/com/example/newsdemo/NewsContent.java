@@ -1,17 +1,23 @@
 package com.example.newsdemo;
 
 import android.content.Intent;
+import android.gesture.Gesture;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
@@ -31,11 +37,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class NewsContent extends AppCompatActivity {
+public class NewsContent extends AppCompatActivity  {
     WebView webView;
     Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbar;
     ImageView imageView;
+    String DEBUG_TAG="ggh";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +59,14 @@ public class NewsContent extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        CoordinatorLayout coordinatorLayout= (CoordinatorLayout) findViewById(R.id.main_content);
+        assert coordinatorLayout != null;
+
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         imageView= (ImageView) findViewById(R.id.image_news);
         //获取得到的index数据，拼接成为URL
         Intent intent = this.getIntent();
@@ -81,6 +94,7 @@ public class NewsContent extends AppCompatActivity {
             super.onPostExecute(contentBean);
             System.out.println(contentBean.subject);
             toolbar.setTitle(contentBean.subject);
+            //toolbar.setBackgroundColor(Color.parseColor("#0C547D"));
             collapsingToolbar.setTitle(contentBean.subject);
             imageView.setImageBitmap(contentBean.bitmap);
             webView.loadData(contentBean.content, "text/html;charset=utf-8", null);
@@ -88,7 +102,7 @@ public class NewsContent extends AppCompatActivity {
         }
     }
 
-    //解析intent传来index对应URL的json
+        //解析intent传来index对应URL的json
     private ContentBean getJsonContent(String url) {
         String jsonString = null;
         try {
