@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity{
         viewPagerAdapter.addFragment(new MyFragment4(),"院系动态");
         viewPagerAdapter.addFragment(new MyFragment5(),"视点观察");
         viewPager.setAdapter(viewPagerAdapter);
-
         tabLayout= (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);

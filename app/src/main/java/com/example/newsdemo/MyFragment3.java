@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -144,7 +145,10 @@ public class MyFragment3 extends android.support.v4.app.Fragment {
         String jsonString = null;
         try {
             jsonString = readStream(new URL(url).openStream());
+
+
         } catch (IOException e) {
+            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
         List<NewsBean> newsBeanList = new ArrayList<>();
@@ -165,6 +169,8 @@ public class MyFragment3 extends android.support.v4.app.Fragment {
                 newsBeanList.add(newsBean);
             }
         } catch (JSONException e) {
+            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
+
             e.printStackTrace();
         }
         return newsBeanList;
