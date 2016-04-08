@@ -31,11 +31,12 @@ public class MainActivity extends AppCompatActivity{
 
         viewPager= (ViewPager) findViewById(R.id.viewpager);
         ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new MyFragment1(),"天大要闻");
-        viewPagerAdapter.addFragment(new MyFragment2(),"校园公告");
-        viewPagerAdapter.addFragment(new MyFragment3(),"社团风采");
-        viewPagerAdapter.addFragment(new MyFragment4(),"院系动态");
-        viewPagerAdapter.addFragment(new MyFragment5(),"视点观察");
+
+        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(1),"天大要闻");
+        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(2),"校园公告");
+        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(3),"社团风采");
+        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(4),"院系动态");
+        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(5),"视点观察");
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout= (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);

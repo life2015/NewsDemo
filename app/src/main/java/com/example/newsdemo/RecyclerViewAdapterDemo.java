@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -117,7 +116,7 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             personViewHolder.news_desc.setText(newses.get(j).getSummary());
             personViewHolder.visit_count.setText("阅读量:"+String.valueOf(newses.get(j).getVisitCount()));
             personViewHolder.comments_count.setText("评论数:"+String.valueOf(newses.get(j).getComments()));
-            Glide.with(context).load(newses.get(j).getPicUrl()).asBitmap().error(R.drawable.error_no_photo).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
+            Glide.with(context).load(newses.get(j).getPic()).asBitmap().error(R.drawable.error_no_photo).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     super.onResourceReady(resource, glideAnimation);
@@ -141,7 +140,7 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
                     Intent intent = new Intent(context, NewsContent.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-                    bundle.putString("bitmap_url",newses.get(j).getPicUrl());
+                    bundle.putString("bitmap_url",newses.get(j).getPic());
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
@@ -153,7 +152,7 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
 //                    Intent intent = new Intent(context, NewsContent.class);
 //                    Bundle bundle = new Bundle();
 //                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-//                    bundle.putString("bitmap_url",newses.get(j).getPicUrl());
+//                    bundle.putString("bitmap_url",newses.get(j).getPic());
 //                    intent.putExtras(bundle);
 //                    context.startActivity(intent);
 //                }

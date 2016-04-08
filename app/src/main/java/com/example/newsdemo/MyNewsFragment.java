@@ -1,6 +1,5 @@
 package com.example.newsdemo;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +31,10 @@ import java.util.List;
 /**
  * Created by jcy on 16/4/2.
  */
-public class MyFragment1 extends android.support.v4.app.Fragment {
+public class MyNewsFragment extends android.support.v4.app.Fragment {
 
     //type:1天大要闻
-    String url = "http://open.twtstudio.com/api/v1/news/1/page/1";
+    //String url = "http://open.twtstudio.com/api/v1/news/1/page/1";
     private RecyclerView recyclerView;
     int NEWS_LIST_ID = 1;
     //i为吐司辅助
@@ -43,6 +44,15 @@ public class MyFragment1 extends android.support.v4.app.Fragment {
     RecyclerViewAdapterDemo adapter;
     private boolean loading=false;
 
+    //传入type
+    public static MyNewsFragment newInstance(int index) {
+
+        Bundle args = new Bundle();
+        args.putString("index",String.valueOf(index));
+        MyNewsFragment fragment = new MyNewsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,10 +112,13 @@ public class MyFragment1 extends android.support.v4.app.Fragment {
 
     class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
 
+
         @Override
         protected List<NewsBean> doInBackground(Integer... params) {
             loading=true;
-            String url = "http://open.twtstudio.com/api/v1/news/1/page/"+String.valueOf(params[0]);
+            Bundle bundle=getArguments();
+            String type=bundle.getString("index");
+            String url = "http://open.twtstudio.com/api/v1/news/"+type+"/page/"+String.valueOf(params[0]);
             List<NewsBean> newsBeanList = getJsonData(url);
             return newsBeanList;
         }
@@ -142,37 +155,49 @@ public class MyFragment1 extends android.support.v4.app.Fragment {
         return result;
     }
 
+    @Nullable
     private List<NewsBean> getJsonData(String url) {
         String jsonString = null;
         try {
             jsonString = readStream(new URL(url).openStream());
         } catch (IOException e) {
             Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+        Gson gson=new Gson();
+        Result result=gson.fromJson(jsonString,Result.class);
 
-            e.printStackTrace();
+        if (result.error_code==-1)
+        {
+            return result.data;
+        }else {
+            Toast.makeText(getActivity(),"网络出现问题",Toast.LENGTH_LONG).show();
+            return null;
         }
-        List<NewsBean> newsBeanList = new ArrayList<>();
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            NewsBean newsBean;
-            JSONArray jsonArray = jsonObject.getJSONArray("data");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                newsBean = new NewsBean();
-                newsBean.TYPE=1;
-                newsBean.index = jsonObject.getInt("index");
-                newsBean.subject = jsonObject.getString("subject");
-                newsBean.picUrl = jsonObject.getString("pic");
-                newsBean.visitCount = jsonObject.getInt("visitcount");
-                newsBean.comments = jsonObject.getInt("comments");
-                newsBean.summary = jsonObject.getString("summary");
-                newsBeanList.add(newsBean);
-            }
-        } catch (JSONException e) {
-            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-        return newsBeanList;
+
+//        List<NewsBean> newsBeanList = new ArrayList<>();
+//        try {
+//            JSONObject jsonObject = new JSONObject(jsonString);
+//            NewsBean newsBean;
+//            JSONArray jsonArray = jsonObject.getJSONArray("data");
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                jsonObject = jsonArray.getJSONObject(i);
+//                newsBean = new NewsBean();
+//                newsBean.TYPE=1;
+//                newsBean.index = jsonObject.getInt("index");
+//                newsBean.subject = jsonObject.getString("subject");
+//                newsBean.pic = jsonObject.getString("pic");
+//                newsBean.visitCount = jsonObject.getInt("visitcount");
+//                newsBean.comments = jsonObject.getInt("comments");
+//                newsBean.summary = jsonObject.getString("summary");
+//                newsBeanList.add(newsBean);
+//            }
+//        } catch (JSONException e) {
+//            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
+//            e.printStackTrace();
+//        }
+//        return newsBeanList;
+
     }
 
 

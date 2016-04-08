@@ -9,29 +9,28 @@ public class NewsBean
 {
     int index;
     String subject;
-    String picUrl;
+    String pic;
     int visitCount;
     int comments;
     String summary;
-    Bitmap bitmap;
     int TYPE;
 
     public NewsBean() {
     }
 
-    public String getPicUrl() {
-        return picUrl;
+    public String getPic() {
+        return pic;
     }
 
-    public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 
-    public NewsBean(int index, String subject, String picUrl, int visitCount, int comments, String summary) {
+    public NewsBean(int index, String subject, String pic, int visitCount, int comments, String summary) {
 
         this.index = index;
         this.subject = subject;
-        this.picUrl = picUrl;
+        this.pic = pic;
         this.visitCount = visitCount;
         this.comments = comments;
         this.summary = summary;
