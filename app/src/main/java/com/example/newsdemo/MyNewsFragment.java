@@ -109,9 +109,7 @@ public class MyNewsFragment extends android.support.v4.app.Fragment {
         //new MyAsyncTask().execute(url);
         return view;
     }
-
     class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
-
 
         @Override
         protected List<NewsBean> doInBackground(Integer... params) {
@@ -161,8 +159,8 @@ public class MyNewsFragment extends android.support.v4.app.Fragment {
         try {
             jsonString = readStream(new URL(url).openStream());
         } catch (IOException e) {
-            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
             e.printStackTrace();
+            Toast.makeText(getActivity(),"网络出现问题，应用自动关闭",Toast.LENGTH_LONG).show();
         }
         Gson gson=new Gson();
         Result result=gson.fromJson(jsonString,Result.class);

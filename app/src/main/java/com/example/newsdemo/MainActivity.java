@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity{
         viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(1),"天大要闻");
         viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(2),"校园公告");
         viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(3),"社团风采");
-        viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(4),"院系动态");
+        //这个API出现了问题
+        //viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(4),"院系动态");
         viewPagerAdapter.addFragment(new MyNewsFragment().newInstance(5),"视点观察");
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout= (TabLayout) findViewById(R.id.tab_layout);

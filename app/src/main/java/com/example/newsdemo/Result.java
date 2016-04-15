@@ -11,6 +11,4 @@ public class Result {
     public int error_code;
     public String message;
     public  List<NewsBean> data;
-
-
 }
