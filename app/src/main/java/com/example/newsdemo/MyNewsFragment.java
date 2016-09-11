@@ -74,7 +74,7 @@ public class MyNewsFragment extends android.support.v4.app.Fragment {
                 {
                     NEWS_LIST_ID++;
                     new MyAsyncTask().execute(NEWS_LIST_ID);
-                    Log.d("gg","触发");
+                    Log.d("Fragment","excute");
                 }
             }
         });
