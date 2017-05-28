@@ -109,6 +109,7 @@ public class MyNewsFragment extends android.support.v4.app.Fragment {
         //new MyAsyncTask().execute(url);
         return view;
     }
+
     class MyAsyncTask extends AsyncTask<Integer, Void, List<NewsBean>> {
 
         @Override

@@ -6,14 +6,14 @@ import android.graphics.Bitmap;
  * Created by 冀辰阳 on 2016/3/23.
  */
 public class ContentBean {
-    String subject;
-    String content;
-    //新闻来源，供稿，审要，摄影
-    String newscome;
-    String gonggao;
-    String shenggao;
-    String sheying;
-    Bitmap bitmap;
+    public String subject;
+    public String content;
+     //新闻来源，供稿，审要，摄影
+    public String newscome;
+    public String gonggao;
+    public String shenggao;
+    public String sheying;
+    public Bitmap bitmap;
     int visitcount;
 
     public ContentBean() {

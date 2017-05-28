@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.thefinestartist.finestwebview.FinestWebView;
+import com.thefinestartist.finestwebview.FinestWebViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +37,6 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
     private Context context;
     public final static int TYPE_FOOTER = 2;//底部--往往是loading_more
     public final static int TYPE_NORMAL = 1; // 正常的一条文章
-    private LayoutInflater mLayoutInflater;
 
     public RecyclerViewAdapterDemo(List<NewsBean> newses, Context context) {
         this.newses = newses;
@@ -60,7 +63,7 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             visit_count = (TextView) itemView.findViewById(R.id.visitcount);
             //readMore = (Button) itemView.findViewById(R.id.btn_more);
             //设置TextView背景为半透明
-            comments_count= (TextView) itemView.findViewById(R.id.comments_count);
+            comments_count = (TextView) itemView.findViewById(R.id.comments_count);
             news_title.setBackgroundColor(Color.argb(20, 0, 0, 0));
 
         }
@@ -74,19 +77,19 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder=null;
+        RecyclerView.ViewHolder viewHolder = null;
         View view;
-        switch (viewType)
-        {
+        switch (viewType) {
             case TYPE_NORMAL:
-                view=mLayoutInflater.from(context).inflate(R.layout.news_item,parent,false);
-                viewHolder=new NewsViewHolder(view);
+                view = LayoutInflater.from(context).inflate(R.layout.news_item, parent, false);
+                viewHolder = new NewsViewHolder(view);
                 return viewHolder;
             case TYPE_FOOTER:
-                view=mLayoutInflater.from(context).inflate(R.layout.footer,parent,false );
-                viewHolder=new FooterViewHolder(view);
+                view = LayoutInflater.from(context).inflate(R.layout.footer, parent, false);
+                viewHolder = new FooterViewHolder(view);
                 return viewHolder;
         }
         return viewHolder;
@@ -96,11 +99,10 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
 
-        if(position+1 >= getItemCount()) {
-            Log.d("gg","print Footer");
+        if (position + 1 >= getItemCount()) {
+            Log.d("gg", "print Footer");
             return TYPE_FOOTER;
-        }else
-        {
+        } else {
             return TYPE_NORMAL;
         }
     }
@@ -108,68 +110,61 @@ public class RecyclerViewAdapterDemo extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final int j = position;
+        final List<Integer> integerList = new ArrayList<>();
 
         if (getItemViewType(position) == TYPE_NORMAL) {
 
-            final NewsViewHolder personViewHolder=(NewsViewHolder)holder;
+            final NewsViewHolder personViewHolder = (NewsViewHolder) holder;
             personViewHolder.news_title.setText(newses.get(j).getSubject());
             personViewHolder.news_desc.setText(newses.get(j).getSummary());
-            personViewHolder.visit_count.setText("阅读量:"+String.valueOf(newses.get(j).getVisitCount()));
-            personViewHolder.comments_count.setText("评论数:"+String.valueOf(newses.get(j).getComments()));
+            personViewHolder.visit_count.setText("阅读量:" + String.valueOf(newses.get(j).getVisitCount()));
+            personViewHolder.comments_count.setText("评论数:" + String.valueOf(newses.get(j).getComments()));
             Glide.with(context).load(newses.get(j).getPic()).asBitmap().error(R.drawable.error_no_photo).into(new BitmapImageViewTarget(personViewHolder.news_photo) {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                     super.onResourceReady(resource, glideAnimation);
-                    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
-                    {Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                                                        @Override
-                                                        public void onGenerated(Palette palette) {
-                                                            int vibrant = palette.getLightMutedColor(0x000000);
-                                                            personViewHolder.cardView.setBackgroundColor(vibrant);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                                            @Override
+                                                            public void onGenerated(Palette palette) {
+                                                                int vibrant = palette.getLightMutedColor(0x000000);
+                                                                integerList.add(vibrant);
+                                                                personViewHolder.cardView.setBackgroundColor(vibrant);
+                                                            }
                                                         }
-                                                    }
-                    );}
+                        );
+                    }
                 }
             });
-
 
             //为btn_share btn_readMore cardView设置点击事件
             personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, NewsContent.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-                    bundle.putString("bitmap_url",newses.get(j).getPic());
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, NewsContentActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
+//                    bundle.putString("bitmap_url", newses.get(j).getPic());
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+
+                    if (integerList.size() == 1) {
+                        int color = integerList.get(0);
+                        new FinestWebView.Builder(context).titleDefault("加载中...")
+                                .toolbarScrollFlags(0)
+                                .statusBarColor(color)
+                                .toolbarColor(color)
+                                .show("https://news.twt.edu.cn/?c=default&a=pernews&id=" + String.valueOf(newses.get(j).getIndex()));
+
+                    } else {
+                        new FinestWebView.Builder(context).titleDefault("加载中...")
+                                .toolbarScrollFlags(0)
+                                .show("https://news.twt.edu.cn/?c=default&a=pernews&id=" + String.valueOf(newses.get(j).getIndex()));
+
+                    }
                 }
             });
 
-//            personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, NewsContent.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-//                    bundle.putString("bitmap_url",newses.get(j).getPic());
-//                    intent.putExtras(bundle);
-//                    context.startActivity(intent);
-//                }
-//            });
-
-            // share部分的代码
-//            personViewHolder.share.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(Intent.ACTION_SEND);
-//                    intent.setType("text/plain");
-//                    intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-//                    intent.putExtra(Intent.EXTRA_TEXT, newses.get(j).getSummary());
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(Intent.createChooser(intent, newses.get(j).getSubject()));
-//                }
-//            });
 
         }
 

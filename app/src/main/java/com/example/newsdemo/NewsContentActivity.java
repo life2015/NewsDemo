@@ -37,21 +37,22 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class NewsContent extends AppCompatActivity  {
+public class NewsContentActivity extends AppCompatActivity {
     WebView webView;
     Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbar;
     ImageView imageView;
-    String DEBUG_TAG="ggh";
+    String DEBUG_TAG = "ggh";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.news_details);
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
-        {//透明状态栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //透明导航栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar_news);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,30 +63,30 @@ public class NewsContent extends AppCompatActivity  {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        CoordinatorLayout coordinatorLayout= (CoordinatorLayout) findViewById(R.id.main_content);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
         assert coordinatorLayout != null;
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
-        imageView= (ImageView) findViewById(R.id.image_news);
+        imageView = (ImageView) findViewById(R.id.image_news);
         //获取得到的index数据，拼接成为URL
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         String index = bundle.getString("index");
-        String BitmapUrl=bundle.getString("bitmap_url");
+        String BitmapUrl = bundle.getString("bitmap_url");
         String contenturl = "http://open.twtstudio.com/api/v1/news/" + index;
         webView = (WebView) findViewById(R.id.webView_news);
         System.out.println(BitmapUrl);
         //执行asynctask
-        new DescAsyncTask().execute(contenturl,BitmapUrl);
+        new DescAsyncTask().execute(contenturl, BitmapUrl);
 
     }
 
     class DescAsyncTask extends AsyncTask<String, Void, ContentBean> {
         @Override
         protected ContentBean doInBackground(String... params) {
-            ContentBean contentBean= getJsonContent(params[0]);
-            contentBean.bitmap=getImageFromUrl(params[1]);
+            ContentBean contentBean = getJsonContent(params[0]);
+            contentBean.bitmap = getImageFromUrl(params[1]);
             return contentBean;
         }
 
@@ -102,7 +103,7 @@ public class NewsContent extends AppCompatActivity  {
         }
     }
 
-        //解析intent传来index对应URL的json
+    //解析intent传来index对应URL的json
     private ContentBean getJsonContent(String url) {
         String jsonString = null;
         try {
@@ -144,6 +145,7 @@ public class NewsContent extends AppCompatActivity  {
         }
         return result;
     }
+
     private Bitmap getImageFromUrl(String url) {
 
         Bitmap bitmap = null;
@@ -159,7 +161,7 @@ public class NewsContent extends AppCompatActivity  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("jcy","加载bitmap");
+        Log.d("jcy", "加载bitmap");
         return bitmap;
     }
 }
